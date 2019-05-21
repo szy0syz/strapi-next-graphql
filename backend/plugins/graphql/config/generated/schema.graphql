@@ -1,3 +1,11 @@
+input createDishInput {
+  data: DishInput
+}
+
+type createDishPayload {
+  dish: Dish
+}
+
 input createRestaurantInput {
   data: RestaurantInput
 }
@@ -27,6 +35,14 @@ The `DateTime` scalar represents a date and time following the ISO 8601 standard
 """
 scalar DateTime
 
+input deleteDishInput {
+  where: InputID
+}
+
+type deleteDishPayload {
+  dish: Dish
+}
+
 input deleteRestaurantInput {
   where: InputID
 }
@@ -51,6 +67,33 @@ type deleteUserPayload {
   user: UsersPermissionsUser
 }
 
+type Dish {
+  id: ID!
+  created_at: DateTime!
+  updated_at: DateTime!
+  name: String
+  description: String
+  image: UploadFile
+  price: Float
+  restaurant: Restaurant
+}
+
+input DishInput {
+  name: String
+  description: String
+  image: ID
+  price: Float
+  restaurant: ID
+}
+
+input editDishInput {
+  name: String
+  description: String
+  image: ID
+  price: Float
+  restaurant: ID
+}
+
 input editFileInput {
   name: String
   hash: String
@@ -68,6 +111,7 @@ input editRestaurantInput {
   name: String
   description: String
   image: ID
+  dishes: [ID]
 }
 
 input editRoleInput {
@@ -114,9 +158,12 @@ scalar JSON
 """The `Long` scalar type represents 52-bit integers"""
 scalar Long
 
-union Morph = UsersPermissionsMe | UsersPermissionsMeRole | Restaurant | createRestaurantPayload | updateRestaurantPayload | deleteRestaurantPayload | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload
+union Morph = UsersPermissionsMe | UsersPermissionsMeRole | Dish | createDishPayload | updateDishPayload | deleteDishPayload | Restaurant | createRestaurantPayload | updateRestaurantPayload | deleteRestaurantPayload | UploadFile | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload
 
 type Mutation {
+  createDish(input: createDishInput): createDishPayload
+  updateDish(input: updateDishInput): updateDishPayload
+  deleteDish(input: deleteDishInput): deleteDishPayload
   createRestaurant(input: createRestaurantInput): createRestaurantPayload
   updateRestaurant(input: updateRestaurantInput): updateRestaurantPayload
   deleteRestaurant(input: deleteRestaurantInput): deleteRestaurantPayload
@@ -142,6 +189,8 @@ type Mutation {
 }
 
 type Query {
+  dish(id: ID!): Dish
+  dishes(sort: String, limit: Int, start: Int, where: JSON): [Dish]
   restaurant(id: ID!): Restaurant
   restaurants(sort: String, limit: Int, start: Int, where: JSON): [Restaurant]
   files(sort: String, limit: Int, start: Int, where: JSON): [UploadFile]
@@ -163,12 +212,14 @@ type Restaurant {
   name: String
   description: String
   image: UploadFile
+  dishes(sort: String, limit: Int, start: Int, where: JSON): [Dish]
 }
 
 input RestaurantInput {
   name: String
   description: String
   image: ID
+  dishes: [ID]
 }
 
 input RoleInput {
@@ -177,6 +228,15 @@ input RoleInput {
   type: String
   permissions: [ID]
   users: [ID]
+}
+
+input updateDishInput {
+  where: InputID
+  data: editDishInput
+}
+
+type updateDishPayload {
+  dish: Dish
 }
 
 input updateRestaurantInput {
