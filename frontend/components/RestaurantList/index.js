@@ -98,7 +98,7 @@ RestaurantList.getInitialProps = async ({ req }) => {
   // const res = await fetch("https://api.github.com/repos/zeit/next.js");
   // const json = await res.json();
   // return { stars: json.stargazers_count };
-  return { stars: 0 };
+  return { stars: 100 };
 };
 // The `graphql` wrapper executes a GraphQL query and makes the results
 // available on the `data` prop of the wrapped component (RestaurantList)
